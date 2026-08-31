@@ -5,7 +5,7 @@ import fs from 'fs';
 import getopts from 'getopts-compat';
 import path from 'path';
 import url from 'url';
-import clear from './lib/clear.ts';
+import { clear } from './index.ts';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 
@@ -32,7 +32,7 @@ function printHelp(name: string): void {
 }
 
 export default (argv: string[], name?: string): void => {
-  name = name || 'iml';
+  name = name || 'iml-compat';
   const options = getopts(argv, {
     alias: { version: 'v', help: 'h' },
     boolean: ['version', 'help'],
@@ -53,8 +53,8 @@ export default (argv: string[], name?: string): void => {
 
   const args = options._;
   if (!args.length) {
-    console.log(`Missing command. Example usage: ${name} [command]`);
-    console.log(`Run "${name} --help" for more information.`);
+    console.error(`Missing command. Example usage: ${name} [command]`);
+    console.error(`Run "${name} --help" for more information.`);
     exit(ERROR_CODE);
     return;
   }
@@ -65,7 +65,7 @@ export default (argv: string[], name?: string): void => {
     return;
   }
 
-  console.log(`Unrecognized command: ${args[0]}. Example usage: ${name} [command]`);
-  console.log(`Run "${name} --help" for more information.`);
+  console.error(`Unrecognized command: ${args[0]}. Example usage: ${name} [command]`);
+  console.error(`Run "${name} --help" for more information.`);
   exit(ERROR_CODE);
 };

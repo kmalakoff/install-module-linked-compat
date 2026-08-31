@@ -53,21 +53,20 @@
     "cross-spawn-cb": "^3.0.0",
     "exit-compat": "^1.0.0",
     "fs-remove-compat": "^1.0.0",
+    "function-exec-sync": "^2.1.2",
     "get-file-compat": "^2.0.0",
     "getopts-compat": "^2.2.5",
     "homedir-polyfill": "^1.0.3",
-    "lockfile": "^1.0.4",
+    "install-module-linked": "^2.0.1",
     "mkdirp-classic": "^0.5.2",
-    "node-version-call-local": "^1.0.0",
-    "queue-cb": "^1.0.0",
-    "temp-suffix": "^1.0.10"
+    "node-version-call-local": "^1.0.0"
   },
   "devDependencies": {
-    "@types/lockfile": "^1.0.4",
     "@types/mocha": "*",
     "@types/node": "*",
     "node-version-use": "*",
     "pinkie-promise": "*",
+    "queue-cb": "^1.0.0",
     "ts-dev-stack": "*",
     "tsds-config": "*"
   },

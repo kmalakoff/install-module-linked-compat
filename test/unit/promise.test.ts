@@ -1,3 +1,4 @@
+// These tests reach the network: they install real packages from the npm registry.
 import assert from 'assert';
 import fs from 'fs';
 import { safeRm } from 'fs-remove-compat';
