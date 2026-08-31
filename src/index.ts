@@ -26,7 +26,11 @@ export function clear(options?: CleanOptions): void {
   clearCore({ ...overlay, ...options });
 }
 
-export function install(specifier: string, dest: string, options: InstallOptions, callback: InstallCallback): void {
+export function install(specifier: string, dest: string, options: InstallOptions, callback: InstallCallback): void;
+export function install(specifier: string, dest: string, options?: InstallOptions, callback?: InstallCallback): void {
+  callback = typeof options === 'function' ? options : (callback as InstallCallback);
+  options = typeof options === 'function' ? {} : ((options || {}) as InstallOptions);
+
   installCore(specifier, dest, { ...overlay, ...options }, callback);
 }
 
