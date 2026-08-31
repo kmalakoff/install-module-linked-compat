@@ -1,0 +1,51 @@
+import fs from 'fs';
+import { safeRm } from 'fs-remove-compat';
+import mkdirp from 'mkdirp-classic';
+import path from 'path';
+import Queue from 'queue-cb';
+import tempSuffix from 'temp-suffix';
+import { DEFAULT_CACHE_PATH } from '../constants.ts';
+import cache from '../lib/cache.ts';
+import parseInstallString from '../lib/parseInstallString.ts';
+
+const isWindows = process.platform === 'win32' || /^(msys|cygwin)$/.test(process.env.OSTYPE ?? '');
+const symlinkType = isWindows ? 'junction' : 'dir';
+
+import type { InstallCallback, InstallOptions } from '../types.ts';
+
+export default function installModule(installString: string, nodeModulesPath: string, options: InstallOptions, callback: InstallCallback): void {
+  const cachePath = options.cachePath || DEFAULT_CACHE_PATH;
+  const { name } = parseInstallString(installString);
+  const dest = path.join(nodeModulesPath, ...name.split('/'));
+
+  fs.stat(dest, (err) => {
+    if (!err) return callback(undefined, dest); // already installed
+
+    cache(installString, cachePath, (err, cachedAt) => {
+      if (err) {
+        console.log(`Could not install: ${installString}. Message: ${err.message}`);
+        return callback(err);
+      }
+
+      // Use temp symlink + atomic rename to avoid cross-process race conditions
+      const tempDest = tempSuffix(dest);
+      const queue = new Queue(1);
+      queue.defer((cb) => mkdirp(path.dirname(dest), (err) => cb(err)));
+      // biome-ignore lint/style/noNonNullAssertion: cache always sets cachedAt when err is null
+      queue.defer((cb) => fs.symlink(cachedAt!, tempDest, symlinkType, (err) => cb(err)));
+      queue.defer((cb) => {
+        fs.rename(tempDest, dest, (err) => {
+          // If rename fails because dest exists, another process won - that's ok
+          if (err && ['EEXIST', 'ENOTEMPTY', 'EPERM'].indexOf(err.code ?? '') >= 0) {
+            safeRm(tempDest, () => cb());
+            return;
+          }
+          cb(err);
+        });
+      });
+      queue.await((err) => {
+        err ? safeRm(tempDest, () => callback(err)) : callback(undefined, dest);
+      });
+    });
+  });
+}
