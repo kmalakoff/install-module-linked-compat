@@ -1,5 +1,5 @@
 import type { CleanOptions, InstallCallback, InstallOptions } from 'install-module-linked';
-import installModuleCore, { clear as clearCore, install, parseInstallString, sync as syncCore } from 'install-module-linked';
+import installModuleCore, { clear as clearCore, install as installCore, parseInstallString, sync as syncCore } from 'install-module-linked';
 import overlay from './compat.ts';
 
 export type * from 'install-module-linked';
@@ -26,4 +26,8 @@ export function clear(options?: CleanOptions): void {
   clearCore({ ...overlay, ...options });
 }
 
-export { install, parseInstallString };
+export function install(specifier: string, dest: string, options: InstallOptions, callback: InstallCallback): void {
+  installCore(specifier, dest, { ...overlay, ...options }, callback);
+}
+
+export { parseInstallString };
