@@ -1,15 +1,23 @@
-## install-module-linked-compat
+# install-module-linked-compat
 
 Installs and symlinks a module into node_modules
 
 This is the broad-Node version of install-module-linked (engines >= 0.8): it re-exports the identical API and injects shims only for the built-ins the running Node lacks. On Node >= 18 it is a pure pass-through to install-module-linked.
 
-### Example 1
+```sh
+npm install install-module-linked-compat
+```
 
-```typescript
-import installModule from 'install-module-linked-compat';
+For older CommonJS applications:
 
-const res = await installModule('my-module@1.2.3', /* path to node_modules */ );
+```js
+var path = require('path');
+var installModule = require('install-module-linked-compat');
+
+installModule('is-number@7.0.0', path.join(__dirname, 'node_modules'), function (err, installedAt) {
+  if (err) throw err;
+  console.log(installedAt);
+});
 ```
 
 ### Documentation
