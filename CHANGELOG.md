@@ -2,6 +2,10 @@
 
 All notable changes to install-module-linked-compat are documented here.
 
+## [1.0.0] - 2026-10-11
+
+Same API and behaviour as 0.2.4.
+
 ## [0.2.4] - 2026-10-11
 
 ### Added
