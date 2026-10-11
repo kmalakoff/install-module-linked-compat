@@ -20,6 +20,8 @@ installModule('is-number@7.0.0', path.join(__dirname, 'node_modules'), function 
 });
 ```
 
+Install strings take the same forms as install-module-linked: an exact version, a semver range or a dist-tag. A range or tag resolves to the version npm would install, on every supported Node.
+
 ### Documentation
 
 [API Docs](https://kmalakoff.github.io/install-module-linked-compat/)
